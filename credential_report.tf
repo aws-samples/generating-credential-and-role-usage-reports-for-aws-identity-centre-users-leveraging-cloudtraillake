@@ -21,6 +21,12 @@ data "aws_iam_policy_document" "AWSLambdaTrustPolicy" {
 
 
 resource "aws_lambda_function" "terraform_lambda_func" {
+#checkov:skip=CKV_AWS_50: Not a requirement
+#checkov:skip=CKV_AWS_117: No resources to be accessed within the VPC and only interacting with the AWS API. 
+#checkov:skip=CKV_AWS_116: Not a requirement
+#checkov:skip=CKV_AWS_115: Not a requirement
+#checkov:skip=CKV_AWS_173: No sensitive information within the environment variable
+
   filename      = "my-deployment-package.zip"
   function_name = "iam_credential_report"
   role          = aws_iam_role.sso_credential_report_role.arn
