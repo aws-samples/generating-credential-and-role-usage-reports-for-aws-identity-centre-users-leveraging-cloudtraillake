@@ -213,17 +213,29 @@ def write_accounts_csv(file_name, account_list, permission_sets, users_per_group
     s3.upload_file(path, bucket, 'credential_reports/'+file_name)
 
 def lambda_handler(event, context):
-    identity_source = os.environ["identity_source"]
-    identity_store_arn = os.environ["identity_store_arn"]
-    lake_id = os.environ["lake_id"]
-    bucket = os.environ['bucket_name']
-    permission_sets = list_accounts_for_provisioned_permission_sets(identity_store_arn)
-    account_lists = list_account_assignments(permission_sets, identity_store_arn)
-    group_list = (get_group_list(identity_source))
-    users_per_group_dict = get_users_permissions_per_group(group_list, identity_source)
-    last_login = get_last_role_login_for_users_list(lake_id)
-    write_accounts_csv(_file_name_generator(),account_lists, permission_sets, users_per_group_dict, group_list, identity_source, last_login,bucket)
-    return "done"
+    try:
+        identity_source = os.environ["identity_source"]
+        identity_store_arn = os.environ["identity_store_arn"]
+        lake_id = os.environ["lake_id"]
+        bucket = os.environ['bucket_name']
+        permission_sets = list_accounts_for_provisioned_permission_sets(identity_store_arn)
+        account_lists = list_account_assignments(permission_sets, identity_store_arn)
+        group_list = (get_group_list(identity_source))
+        users_per_group_dict = get_users_permissions_per_group(group_list, identity_source)
+        last_login = get_last_role_login_for_users_list(lake_id)
+        write_accounts_csv(_file_name_generator(),account_lists, permission_sets, users_per_group_dict, group_list, identity_source, last_login,bucket)
+        answer = {
+            "message": "Succesful",
+            "resultCode": 200
+        }
+    except Exception as e:
+        print(e)
+        answer = {
+        "message": "Failed",
+        "resultCode": 400,
+        "error": e
+        }
+    return answer
 
 
 

@@ -18,6 +18,31 @@ data "aws_iam_policy_document" "AWSLambdaTrustPolicy" {
   }
 }
 
+resource "aws_ssm_document" "securityhub_export_document" {
+  name            = "credential_report_export"
+  document_format = "YAML"
+  document_type   = "Automation"
+
+  content = <<DOC
+        schemaVersion: "0.3"
+        description: Generate a report of SSO users and the last time they used a role.
+        mainSteps:
+          - action: aws:invokeLambdaFunction
+            name: InvokeLambdaforCredExport
+            inputs:
+              InvocationType: RequestResponse
+              FunctionName: '${aws_lambda_function.terraform_lambda_func.function_name}'
+            description: Invoke the CSV Manager for Security Hub lambda function.
+            outputs:
+              - Name: resultCode
+                Selector: $.resultCode
+                Type: Integer
+            isEnd: true
+      DocumentType: Automation
+      Name: start_export
+DOC
+}
+
 
 
 resource "aws_lambda_function" "terraform_lambda_func" {
