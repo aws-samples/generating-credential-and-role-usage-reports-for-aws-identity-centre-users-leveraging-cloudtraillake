@@ -1,6 +1,11 @@
 # Export IAM Credential Reports
 
-The IAM Credential Reports pattern leverages CloudTrail Lake and SSO to generate a list of users, assigned roles and the last time they authenticated in that role based on entries in CloudTrail Lake.
+This sample provides a solution with Terraform and Python that generates credential reports for AWS Identity Centre users (formerly known as SSO) by generating a list of users and their assigned roles. Subsequently it uses CloudTrail Lake to find the date the user last logged into that role and generates a CSV file.
+
+The SSO Credential report creates a correlation between SSO accounts defined in Identity Centre within the managed active directory and correlates them against entries within CloudTrail by querying CloudTrail Lake.
+
+The report is generated once a week, but you can modify the code to make it more frequent or run it manually.
+
 
 ![IAM Use Cases](iam.png)
 
@@ -8,18 +13,20 @@ The IAM Credential Reports pattern leverages CloudTrail Lake and SSO to generate
 CloudTrail Lake must be deployed and permissions should be assigned so that CloudTrail lake can load the CloudTrail logs succesfully within the Lake. 
 
 
-## Deployment
+# Deployment
+
+
+## Build The Lambda Package
 To deploy the code, first execute the `package.sh` script to create the zip file containing the Lambda code. Subsequently change the Terraform variables and deploy the code.
 
-### Terraform Variables
+## Modify The Terraform Variables
 - security_bucket: Name of the security bucket in the security account.
 - identity_source: Navigate to IAM Identity Center. On the right side, click on “Go to settings”. Under the identity source tab, copy the identity store ID
 - identity_store_arn: Navigate to IAM Identity Center. On the right side, click on “Go to settings”. Under details section, copy the ARN
 - lake_id:  is the Event data store ID which can be found in CloudTrail Lake
 
-## Using the code
 
-## Report Usage
+# Report Usage
 The report consists of the following fields:
 -	account	: Account number
 -	PermissionSetArn: ARN of the permission set	
