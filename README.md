@@ -1,4 +1,4 @@
-# Export IAM Credential Reports
+# Export Credential Reports for AWS Identity Centre leveraging CloudtrailLake
 
 This sample provides a solution with Terraform and Python that generates credential reports for AWS Identity Centre users (formerly known as SSO) by generating a list of users and their assigned roles. Subsequently it uses CloudTrail Lake to find the date the user last logged into that role and generates a CSV file.
 
